@@ -3,34 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ジャグラー記録（閲覧）</title>
+<title>データ一覧</title>
+<link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="style.css">
+<script>
+const { createClient } = supabase;
+const supabaseClient = createClient(
+  "https://ntsywyieoxbysyrxpyio.supabase.co",
+  "sb_publishable_yUFkp0_uTg2muAmPiwK4Qw_oLDdVGS5"
+);
+</script>
 </head>
 <body>
 
-<h1>📊 実践データ閲覧</h1>
-<a href="save.html" class="linkBtn">⬅ 保存ページへ</a>
+<h2>📊 データ一覧</h2>
 
-<div class="tableWrap">
+<h3 id="totalProfit"></h3>
+
 <table>
 <thead>
 <tr>
-  <th>日付</th>
-  <th>台</th>
-  <th>回転</th>
-  <th>BB</th>
-  <th>RB</th>
-  <th>合算</th>
-  <th>🍇</th>
-  <th>🍒</th>
-  <th></th>
+<th>日付</th>
+<th>店名</th>
+<th>台</th>
+<th>回転</th>
+<th>BB</th>
+<th>RB</th>
+<th>合算</th>
+<th>ブドウ</th>
+<th>チェリー</th>
+<th>投資</th>
+<th>回収</th>
+<th>差枚</th>
+<th></th>
 </tr>
 </thead>
 <tbody id="dataList"></tbody>
 </table>
-</div>
 
 <script src="view.js"></script>
 </body>

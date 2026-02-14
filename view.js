@@ -1,38 +1,31 @@
-const { createClient } = supabase;
-
-const supabaseClient = createClient(
-  "https://ntsywyieoxbysyrxpyio.supabase.co",
-  "sb_publishable_yUFkp0_uTg2muAmPiwK4Qw_oLDdVGS5"
-);
-
 async function loadData() {
 
   const { data, error } = await supabaseClient
-    .from("juggler_data")
-    .select("*")
-    .order("play_date", { ascending: false });
-
-  if (error) {
-    console.error(error);
-    return;
-  }
+  .from("juggler_data")
+  .select("*")
+  .order("play_date", { ascending: false });
 
   const list = document.getElementById("dataList");
   list.innerHTML = "";
+
+  let total = 0;
 
   data.forEach(row => {
 
     const totalBB = (row.bb_single || 0) + (row.bb_cherry || 0);
     const totalRB = (row.rb_single || 0) + (row.rb_cherry || 0);
-    const totalBonus = totalBB + totalRB;
+    const gassan = row.games ? Math.floor(row.games / (totalBB + totalRB || 1)) : "-";
 
-    const gassan = totalBonus > 0
-      ? "1/" + Math.floor(row.games / totalBonus)
-      : "-";
+    const invest = row.invest || 0;
+    const payout = row.payout || 0;
+    const diff = payout - invest;
+
+    total += diff;
 
     list.innerHTML += `
       <tr>
         <td>${row.play_date || ""}</td>
+        <td>${row.store || ""}</td>
         <td>${row.machine_number || ""}</td>
         <td>${row.games || 0}</td>
         <td>${totalBB}</td>
@@ -40,10 +33,16 @@ async function loadData() {
         <td>${gassan}</td>
         <td>${row.grape || 0}</td>
         <td>${row.cherry || 0}</td>
+        <td>${invest}</td>
+        <td>${payout}</td>
+        <td style="color:${diff >= 0 ? 'red' : 'blue'}">${diff}</td>
         <td><button onclick="deleteData(${row.id})">削除</button></td>
       </tr>
     `;
   });
+
+  document.getElementById("totalProfit").innerText =
+    "累計収支: " + total + " 枚";
 }
 
 async function deleteData(id) {
@@ -55,4 +54,4 @@ async function deleteData(id) {
   loadData();
 }
 
-document.addEventListener("DOMContentLoaded", loadData);
+loadData();
