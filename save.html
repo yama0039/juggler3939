@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ジャグラー記録（保存）</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🎰 実践データ保存</h1>
+<a href="view.html" class="linkBtn">📊 データを見る</a>
+
+<div class="card">
+
+<input id="play_date" type="date">
+<input id="store" placeholder="店名">
+<input id="machine" placeholder="機種名">
+<input id="number" type="number" placeholder="台番号">
+<input id="games" type="number" placeholder="総回転数">
+
+<h3>🎯 ボーナス</h3>
+<div class="grid2">
+  <input id="bb_single" type="number" placeholder="単独BB">
+  <input id="bb_cherry" type="number" placeholder="🍒BB">
+  <input id="rb_single" type="number" placeholder="単独RB">
+  <input id="rb_cherry" type="number" placeholder="🍒RB">
+</div>
+
+<h3>🍇 小役</h3>
+<div class="grid2">
+  <input id="grape" type="number" placeholder="ブドウ">
+  <input id="cherry" type="number" placeholder="チェリー">
+</div>
+
+<button onclick="saveData()">保存</button>
+
+</div>
+
+<script src="save.js"></script>
+</body>
+</html>
