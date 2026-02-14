@@ -2,43 +2,50 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>ジャグラー実践データ管理</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ジャグラー実践データ</title>
 
+<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="style.css">
 
+<!-- CSS -->
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>🎰 ジャグラー実践データ管理</h1>
+<h1>🎰 ジャグラー記録</h1>
 
-<div class="form">
-  <input id="play_date" type="date">
-  <input id="store" placeholder="店名">
-  <input id="machine" placeholder="機種名">
-  <input id="number" type="number" placeholder="台番号">
-  <input id="games" type="number" placeholder="総回転数">
+<div class="card">
 
-  <h3>🎯 ボーナス</h3>
+<input id="play_date" type="date">
+<input id="store" placeholder="店名">
+<input id="machine" placeholder="機種名">
+<input id="number" type="number" inputmode="numeric" placeholder="台番号">
+<input id="games" type="number" inputmode="numeric" placeholder="総回転数">
+
+<h3>🎯 ボーナス</h3>
+<div class="grid2">
   <input id="bb_single" type="number" placeholder="単独BB">
-  <input id="bb_cherry" type="number" placeholder="チェリーBB">
+  <input id="bb_cherry" type="number" placeholder="🍒BB">
   <input id="rb_single" type="number" placeholder="単独RB">
-  <input id="rb_cherry" type="number" placeholder="チェリーRB">
-
-  <h3>🍇 小役</h3>
-  <input id="grape" type="number" placeholder="ブドウ">
-  <input id="cherry" type="number" placeholder="チェリー">
-
-  <button onclick="saveData()">保存</button>
+  <input id="rb_cherry" type="number" placeholder="🍒RB">
 </div>
 
-<h2>📊 データ一覧</h2>
+<h3>🍇 小役</h3>
+<div class="grid2">
+  <input id="grape" type="number" placeholder="ブドウ">
+  <input id="cherry" type="number" placeholder="チェリー">
+</div>
+
+<button onclick="saveData()">保存</button>
+
+</div>
+
+<div class="tableWrap">
 <table>
 <thead>
 <tr>
   <th>日付</th>
-  <th>店</th>
-  <th>機種</th>
   <th>台</th>
   <th>回転</th>
   <th>BB</th>
@@ -46,21 +53,14 @@
   <th>合算</th>
   <th>🍇</th>
   <th>🍒</th>
-  <th>削除</th>
+  <th></th>
 </tr>
 </thead>
 <tbody id="dataList"></tbody>
 </table>
+</div>
 
-<script>
-  // ⭐ ここだけに書く（1回だけ！）
-  const { createClient } = supabase;
-  const supabaseClient = createClient(
-    "https://ntsywyieoxbysyrxpyio.supabase.co",
-    "sb_publishable_yUFkp0_uTg2muAmPiwK4Qw_oLDdVGS5"
-  );
-</script>
-
+<!-- JS（Supabaseより後に読み込む） -->
 <script src="script.js"></script>
 
 </body>

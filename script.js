@@ -1,47 +1,65 @@
+/* ==========================
+   Supabase 初期化（1回だけ）
+========================== */
+const { createClient } = supabase;
+
+const supabaseClient = createClient(
+  "https://ntsywyieoxbysyrxpyio.supabase.co",
+  "sb_publishable_yUFkp0_uTg2muAmPiwK4Qw_oLDdVGS5"
+);
+
+/* ==========================
+   今日の日付を自動セット
+========================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("play_date").value = today;
+  loadData();
+});
+
+/* ==========================
+   保存
+========================== */
 async function saveData() {
 
-  const play_date = document.getElementById("play_date").value;
-  const store = document.getElementById("store").value;
-  const machine = document.getElementById("machine").value;
-  const machine_number = parseInt(document.getElementById("number").value);
-  const games = parseInt(document.getElementById("games").value);
+  const games = Number(document.getElementById("games").value) || 0;
+  const bb_single = Number(document.getElementById("bb_single").value) || 0;
+  const bb_cherry = Number(document.getElementById("bb_cherry").value) || 0;
+  const rb_single = Number(document.getElementById("rb_single").value) || 0;
+  const rb_cherry = Number(document.getElementById("rb_cherry").value) || 0;
 
-  const bb_single = parseInt(document.getElementById("bb_single").value) || 0;
-  const bb_cherry = parseInt(document.getElementById("bb_cherry").value) || 0;
-  const rb_single = parseInt(document.getElementById("rb_single").value) || 0;
-  const rb_cherry = parseInt(document.getElementById("rb_cherry").value) || 0;
-  const grape = parseInt(document.getElementById("grape").value) || 0;
-  const cherry = parseInt(document.getElementById("cherry").value) || 0;
-
-  if (!play_date || !games) {
-    alert("日付と総回転数は必須です");
-    return;
-  }
+  const totalBonus = bb_single + bb_cherry + rb_single + rb_cherry;
+  const gassan = totalBonus > 0 ? Math.floor(games / totalBonus) : null;
 
   const { error } = await supabaseClient
     .from("juggler_data")
     .insert([{
-      play_date,
-      store,
-      machine,
-      machine_number,
+      play_date: document.getElementById("play_date").value,
+      store: document.getElementById("store").value,
+      machine: document.getElementById("machine").value,
+      number: document.getElementById("number").value,
       games,
       bb_single,
       bb_cherry,
       rb_single,
       rb_cherry,
-      grape,
-      cherry
+      grape: document.getElementById("grape").value,
+      cherry: document.getElementById("cherry").value,
+      gassan
     }]);
 
   if (error) {
-    alert("保存失敗: " + error.message);
-  } else {
-    alert("保存成功！");
-    loadData();
+    alert("保存エラー: " + error.message);
+    return;
   }
+
+  alert("保存しました");
+  loadData();
 }
 
+/* ==========================
+   データ取得
+========================== */
 async function loadData() {
 
   const { data, error } = await supabaseClient
@@ -57,35 +75,30 @@ async function loadData() {
   const list = document.getElementById("dataList");
   list.innerHTML = "";
 
-  data.forEach(record => {
+  data.forEach(row => {
 
-    const bb_total = record.bb_single + record.bb_cherry;
-    const rb_total = record.rb_single + record.rb_cherry;
-    const bonus_total = bb_total + rb_total;
+    const totalBB = row.bb_single + row.bb_cherry;
+    const totalRB = row.rb_single + row.rb_cherry;
 
-    const gassan = bonus_total > 0 ? (record.games / bonus_total).toFixed(1) : "-";
-    const grape_rate = record.grape > 0 ? (record.games / record.grape).toFixed(1) : "-";
-    const cherry_rate = record.cherry > 0 ? (record.games / record.cherry).toFixed(1) : "-";
-
-    const row = `
+    list.innerHTML += `
       <tr>
-        <td>${record.play_date}</td>
-        <td>${record.store}</td>
-        <td>${record.machine}</td>
-        <td>${record.machine_number}</td>
-        <td>${record.games}</td>
-        <td>${bb_total}</td>
-        <td>${rb_total}</td>
-        <td>1/${gassan}</td>
-        <td>1/${grape_rate}</td>
-        <td>1/${cherry_rate}</td>
-        <td><button onclick="deleteData(${record.id})">削除</button></td>
+        <td>${row.play_date}</td>
+        <td>${row.number}</td>
+        <td>${row.games}</td>
+        <td>${totalBB}</td>
+        <td>${totalRB}</td>
+        <td>${row.gassan ? "1/" + row.gassan : "-"}</td>
+        <td>${row.grape}</td>
+        <td>${row.cherry}</td>
+        <td><button onclick="deleteData(${row.id})">削除</button></td>
       </tr>
     `;
-    list.innerHTML += row;
   });
 }
 
+/* ==========================
+   削除
+========================== */
 async function deleteData(id) {
   await supabaseClient
     .from("juggler_data")
@@ -94,5 +107,3 @@ async function deleteData(id) {
 
   loadData();
 }
-
-loadData();
